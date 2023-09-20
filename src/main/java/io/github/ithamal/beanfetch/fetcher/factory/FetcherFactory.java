@@ -1,4 +1,4 @@
-package io.github.ithamal.beanfetch.factory;
+package io.github.ithamal.beanfetch.fetcher.factory;
 
 import io.github.ithamal.beanfetch.fetcher.Fetcher;
 

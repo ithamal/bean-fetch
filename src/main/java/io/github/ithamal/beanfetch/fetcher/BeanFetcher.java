@@ -2,8 +2,8 @@ package io.github.ithamal.beanfetch.fetcher;
 
 import io.github.ithamal.beanfetch.convert.KeyConverter;
 import io.github.ithamal.beanfetch.fetcher.enhance.BeanEnhancer;
-import io.github.ithamal.beanfetch.factory.FetcherFactory;
-import io.github.ithamal.beanfetch.factory.FetcherFactoryManager;
+import io.github.ithamal.beanfetch.fetcher.factory.FetcherFactory;
+import io.github.ithamal.beanfetch.fetcher.factory.FetcherFactoryManager;
 import io.github.ithamal.beanfetch.util.SingleList;
 
 import java.util.*;
