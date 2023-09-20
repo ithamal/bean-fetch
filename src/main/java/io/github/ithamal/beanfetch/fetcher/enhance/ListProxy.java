@@ -1,4 +1,4 @@
-package io.github.ithamal.beanfetch.enhance;
+package io.github.ithamal.beanfetch.fetcher.enhance;
 
 import io.github.ithamal.beanfetch.fetcher.FetchCallback;
 import lombok.SneakyThrows;
