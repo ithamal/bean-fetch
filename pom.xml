@@ -6,7 +6,7 @@
 
     <groupId>io.github.ithamal</groupId>
     <artifactId>beanfetch</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>bean-fetch</name>
     <description>fetch relational models for domain model</description>
     <url>https://github.com/ithamal/bean-fetch</url>

@@ -11,7 +11,7 @@ import java.util.*;
  * @param <K> 键类型
  * @param <V> 值类型
  */
-public abstract class ListAdaptFetcher<K, V> implements Fetcher<K, V> {
+public abstract class ListFetcherAdapter<K, V> implements Fetcher<K, V> {
 
     /**
      * 填充

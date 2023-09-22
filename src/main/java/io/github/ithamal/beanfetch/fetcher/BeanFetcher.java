@@ -83,6 +83,12 @@ public class BeanFetcher<T, S> {
         toBean(list, t -> (T) t);
     }
 
+    public T toBean(S source, Function<S, T> mapper) {
+        SingleList<S> sourceList = new SingleList<>(source);
+        List<T> resultList = toBean(sourceList, mapper);
+        return resultList.isEmpty() ? null : resultList.get(0);
+    }
+
     public List<T> toBean(List<S> sourceList, Function<S, T> mapper) {
         HashMap<S, T> beanMap = new HashMap<>();
         List<T> beanList = new ArrayList<>(sourceList.size());

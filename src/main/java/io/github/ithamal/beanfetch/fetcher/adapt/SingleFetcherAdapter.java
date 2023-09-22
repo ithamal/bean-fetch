@@ -2,7 +2,6 @@ package io.github.ithamal.beanfetch.fetcher.adapt;
 
 import io.github.ithamal.beanfetch.fetcher.Fetcher;
 import io.github.ithamal.beanfetch.util.SingleMap;
-import lombok.*;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -12,7 +11,7 @@ import java.util.Map;
  * @author: ken.lin
  * @since: 2023-09-20 17:15
  */
-public abstract class SingleAdaptFetcher<K, V> implements Fetcher<K, V> {
+public abstract class SingleFetcherAdapter<K, V> implements Fetcher<K, V> {
 
     protected abstract V fetchOne(K key);
 
