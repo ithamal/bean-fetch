@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * @author: ken.lin
- * @date: 2023-09-20 17:15
+ * @since: 2023-09-20 17:15
  */
 public abstract class SingleAdaptFetcher<K, V> implements Fetcher<K, V> {
 

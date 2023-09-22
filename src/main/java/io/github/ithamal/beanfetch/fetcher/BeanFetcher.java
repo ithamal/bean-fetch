@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author: ken.lin
- * @date: 2023-09-20 09:38
+ * @since: 2023-09-20 09:38
  */
 @SuppressWarnings("unchecked")
 public class BeanFetcher<T, S> {

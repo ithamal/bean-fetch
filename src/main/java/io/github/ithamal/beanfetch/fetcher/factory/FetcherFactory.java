@@ -4,7 +4,7 @@ import io.github.ithamal.beanfetch.fetcher.Fetcher;
 
 /**
  * @author: ken.lin
- * @date: 2023-09-20 10:00
+ * @since: 2023-09-20 10:00
  */
 public interface FetcherFactory {
 

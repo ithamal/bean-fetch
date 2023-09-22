@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author: ken.lin
- * @date: 2023-09-19 17:55
+ * @since: 2023-09-19 17:55
  */
 public class CollectionUtil {
 

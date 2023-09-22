@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 /**
  * @author: ken.lin
- * @date: 2023-09-20 10:51
+ * @since: 2023-09-20 10:51
  */
 @FunctionalInterface
 public interface ValueSetter<T, V> extends Serializable {

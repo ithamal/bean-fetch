@@ -9,7 +9,7 @@ import java.util.ListIterator;
 
 /**
  * @author: ken.lin
- * @date: 2023-09-20 09:49
+ * @since: 2023-09-20 09:49
  */
 public class SingleList<E> implements List<E> {
 

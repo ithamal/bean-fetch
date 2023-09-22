@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 /**
  * @author: ken.lin
- * @date: 2023-09-19 17:28
+ * @since: 2023-09-19 17:28
  */
 @ComponentScan("io.github.ithamal.beanfetch")
 public class SpringTests {

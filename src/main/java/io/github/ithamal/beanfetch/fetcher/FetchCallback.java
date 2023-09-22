@@ -6,7 +6,7 @@ import lombok.*;
 
 /**
  * @author: ken.lin
- * @date: 2023-09-20 15:15
+ * @since: 2023-09-20 15:15
  */
 @Builder
 @AllArgsConstructor

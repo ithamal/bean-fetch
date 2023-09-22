@@ -5,7 +5,7 @@ import io.github.ithamal.beanfetch.support.SpringContextAware;
 
 /**
  * @author: ken.lin
- * @date: 2023-09-20 10:23
+ * @since: 2023-09-20 10:23
  */
 public class FetcherFactoryManager  {
 

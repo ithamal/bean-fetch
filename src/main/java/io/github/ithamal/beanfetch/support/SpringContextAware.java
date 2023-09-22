@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author: ken.lin
- * @date: 2023-09-20 16:31
+ * @since: 2023-09-20 16:31
  */
 @Component
 public class SpringContextAware implements ApplicationContextAware {

@@ -6,7 +6,7 @@ import java.util.Map;
 
 /**
  * @author: ken.lin
- * @date: 2023-09-20 09:39
+ * @since: 2023-09-20 09:39
  */
 @FunctionalInterface
 public interface Fetcher<K, V> {

@@ -9,7 +9,7 @@ import java.util.*;
 
 /**
  * @author: ken.lin
- * @date: 2023-09-20 15:31
+ * @since: 2023-09-20 15:31
  */
 @SuppressWarnings("unchecked")
 public class ListProxy<E> implements List<E> {

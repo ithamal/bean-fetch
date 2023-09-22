@@ -3,7 +3,7 @@ package io.github.ithamal.beanfetch.convert;
 
 /**
  * @author: ken.lin
- * @date: 2023-09-20 10:35
+ * @since: 2023-09-20 10:35
  */
 public class StrToIntListSplitter implements KeyConverter<String, Integer> {
 
