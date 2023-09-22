@@ -38,19 +38,28 @@ public class SimpleTests {
         );
         RoleRepository roleRepository = new RoleRepository();
         BeanFetcher<User, UserPo> beanFetcher = new BeanFetcher<User, UserPo>()
-                .many(FetchType.EAGER, User::setRoles, UserPo::getRoleIds, StrToIntListSplitter.INSTANCE, RoleFilter.class)
-                .many(FetchType.EAGER, User::setRoles, UserPo::getRoleIds, StrToIntListSplitter.INSTANCE, roleRepository::findMapByIds)
-                .single(FetchType.EAGER, User::setRole, UserPo::getRoleIds, StrToIntListSplitter.INSTANCE, RoleFilter.class)
+//                .many(FetchType.EAGER, User::setRoles, UserPo::getRoleIds, StrToIntListSplitter.INSTANCE, RoleFilter.class)
+                .many(FetchType.LAZY, User::setRoles, UserPo::getRoleIds, StrToIntListSplitter.INSTANCE, roleRepository::findMapByIds)
+//                .single(FetchType.EAGER, User::setRole, UserPo::getRoleIds, StrToIntListSplitter.INSTANCE, RoleFilter.class)
                 .single(FetchType.LAZY, User::setRole, UserPo::getRoleIds, StrToIntListSplitter.INSTANCE, (k) -> {
                     System.out.println("加载键：" + k);
                     return new SingleMap<>(1, new Role(1, "特殊"));
-                });
+                })
+                ;
         List<User> userList = beanFetcher.toBean(poList, it -> {
             return new User(it.getName());
         });
         System.out.println("-------------- 热加载结束 ---------------------");
         for (User user : userList) {
-            System.out.println(user);
+            printUser(user);
         }
+    }
+
+    private static void printUser(User user) {
+        System.out.println("User{" +
+                "name='" + user.getName() + '\'' +
+                ", role=" + user.getRole() +
+                ", roles=" + user.getRoles() +
+                '}');
     }
 }

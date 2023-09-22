@@ -5,7 +5,10 @@ import io.github.ithamal.beanfetch.fetcher.enhance.BeanEnhancer;
 import io.github.ithamal.beanfetch.fetcher.factory.FetcherFactory;
 import io.github.ithamal.beanfetch.fetcher.factory.FetcherFactoryManager;
 import io.github.ithamal.beanfetch.util.SingleList;
+import lombok.SneakyThrows;
 
+import java.lang.invoke.SerializedLambda;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -19,7 +22,11 @@ public class BeanFetcher<T, S> {
 
     private final List<FetchMeta> metaList = new ArrayList<>();
 
+    private final Map<String, FetchMeta> lazyMethodMap = new HashMap<>();
+
     private FetcherFactory fetcherFactory = FetcherFactoryManager.getFactory();
+
+    private boolean hasLazy;
 
     public void setFetcherFactory(FetcherFactory fetcherFactory) {
         this.fetcherFactory = fetcherFactory;
@@ -27,56 +34,52 @@ public class BeanFetcher<T, S> {
 
     public <K, SK, V> BeanFetcher<T, S> many(FetchType type, ValueSetter<T, List<V>> setter, Function<S, K> keyMapper,
                                              KeyConverter<K, SK> keyConverter, Class<? extends Fetcher<SK, V>> fetcherClass) {
+        hasLazy = hasLazy || type == FetchType.LAZY;
         Fetcher<?, ?> fetcher = fetcherFactory.getFetcher(fetcherClass);
-        metaList.add(FetchMeta.builder()
-                .isMany(true)
-                .type(type)
-                .setter(setter)
-                .keyMapper(keyMapper)
-                .keyConverter(keyConverter)
-                .fetcher(fetcher)
-                .build());
+        addMeta( true, type, setter, keyMapper, keyConverter, fetcher);
         return this;
     }
 
     public <K, SK, V> BeanFetcher<T, S> many(FetchType type, ValueSetter<T, List<V>> setter, Function<S, K> keyMapper,
                                              KeyConverter<K, SK> keyConverter, Fetcher<SK, V> fetcher) {
-        metaList.add(FetchMeta.builder()
-                .isMany(true)
-                .type(type)
-                .setter(setter)
-                .keyMapper(keyMapper)
-                .keyConverter(keyConverter)
-                .fetcher(fetcher)
-                .build());
+        addMeta(true, type, setter, keyMapper, keyConverter, fetcher);
         return this;
     }
 
     public <K, SK, V> BeanFetcher<T, S> single(FetchType type, ValueSetter<T, V> setter, Function<S, K> keyMapper,
                                                KeyConverter<K, SK> keyConverter, Class<? extends Fetcher<SK, V>> fetcherClass) {
+        hasLazy = hasLazy || type == FetchType.LAZY;
         Fetcher<?, ?> fetcher = fetcherFactory.getFetcher(fetcherClass);
-        metaList.add(FetchMeta.builder()
-                .isMany(false)
-                .type(type)
-                .setter(setter)
-                .keyMapper(keyMapper)
-                .keyConverter(keyConverter)
-                .fetcher(fetcher)
-                .build());
+        addMeta(false, type, setter, keyMapper, keyConverter, fetcher);
         return this;
     }
 
     public <K, SK, V> BeanFetcher<T, S> single(FetchType type, ValueSetter<T, V> setter, Function<S, K> keyMapper,
                                                KeyConverter<K, SK> keyConverter, Fetcher<SK, V> fetcher) {
-        metaList.add(FetchMeta.builder()
-                .isMany(false)
+        addMeta(false, type, setter, keyMapper, keyConverter, fetcher);
+        return this;
+    }
+
+    private void addMeta(boolean isMany, FetchType type, ValueSetter setter, Function keyMapper, KeyConverter keyConverter,
+                         Fetcher fetcher) {
+        hasLazy = hasLazy || type == FetchType.LAZY;
+        FetchMeta meta = FetchMeta.builder()
+                .isMany(isMany)
                 .type(type)
                 .setter(setter)
+                .getter(getGetter(setter))
                 .keyMapper(keyMapper)
                 .keyConverter(keyConverter)
                 .fetcher(fetcher)
-                .build());
-        return this;
+                .build();
+        if (meta.getType() == FetchType.LAZY) {
+            lazyMethodMap.put(meta.getGetter().getName(), meta);
+        }
+        metaList.add(meta);
+    }
+
+    public FetchMeta findLazyMethodMeta(String methodName) {
+        return lazyMethodMap.get(methodName);
     }
 
     public void fill(List<S> list) {
@@ -84,6 +87,7 @@ public class BeanFetcher<T, S> {
     }
 
     public T toBean(S source, Function<S, T> mapper) {
+        if (source == null) return null;
         SingleList<S> sourceList = new SingleList<>(source);
         List<T> resultList = toBean(sourceList, mapper);
         return resultList.isEmpty() ? null : resultList.get(0);
@@ -94,6 +98,9 @@ public class BeanFetcher<T, S> {
         List<T> beanList = new ArrayList<>(sourceList.size());
         for (S source : sourceList) {
             T bean = mapper.apply(source);
+            if (hasLazy) {
+                bean = (T) BeanEnhancer.enhance(this, bean, source);
+            }
             beanList.add(bean);
             beanMap.put(source, bean);
         }
@@ -101,10 +108,7 @@ public class BeanFetcher<T, S> {
             if (meta.getType() == FetchType.EAGER) {
                 fetch(beanMap, sourceList, meta);
             } else {
-                for (S source : sourceList) {
-                    T target = beanMap.get(source);
-                    fillProxy(source, target, meta);
-                }
+
             }
         }
         return beanList;
@@ -127,17 +131,6 @@ public class BeanFetcher<T, S> {
         }
     }
 
-    private void fillProxy(S source, T target, FetchMeta meta) {
-        FetchCallback<T, S> callback = FetchCallback.<T, S>builder().fetcher(this).source(source).target(target).meta(meta).build();
-        if (meta.isMany) {
-            Object value = BeanEnhancer.enhanceMany(meta.setter, callback);
-            meta.setter.set(target, value);
-        } else {
-            Object value = BeanEnhancer.enhanceSingle(meta.setter, callback);
-            meta.setter.set(target, value);
-        }
-    }
-
     private Collection<Object> collectKeys(List<S> sourceList, FetchMeta meta, boolean distinct) {
         Collection<Object> keys = distinct ? new HashSet<>() : new ArrayList<>();
         for (S source : sourceList) {
@@ -151,5 +144,17 @@ public class BeanFetcher<T, S> {
         return keys;
     }
 
+    public List<FetchMeta> getMetaList() {
+        return metaList;
+    }
 
+    @SneakyThrows
+    private Method getGetter(ValueSetter<?, ?> setter) {
+        Method method = setter.getClass().getDeclaredMethod("writeReplace");
+        method.setAccessible(true);
+        SerializedLambda lambda = (SerializedLambda) method.invoke(setter);
+        String implClassName = lambda.getImplClass().replace("/", ".");
+        String getMethodName = lambda.getImplMethodName().replace("set", "get");
+        return Class.forName(implClassName).getDeclaredMethod(getMethodName);
+    }
 }

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.lang.reflect.Method;
 import java.util.function.Function;
 
 /**
@@ -21,6 +22,8 @@ public class FetchMeta {
     public final boolean isMany;
 
     public final ValueSetter setter;
+
+    private final Method getter;
 
     public final Function keyMapper;
 
