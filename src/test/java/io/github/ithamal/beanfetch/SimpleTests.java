@@ -1,5 +1,6 @@
 package io.github.ithamal.beanfetch;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.github.ithamal.beanfetch.fetcher.FetchType;
 import io.github.ithamal.beanfetch.fetcher.BeanFetcher;
 import io.github.ithamal.beanfetch.convert.StrToIntListSplitter;
@@ -50,9 +51,10 @@ public class SimpleTests {
             return new User(it.getName());
         });
         System.out.println("-------------- 热加载结束 ---------------------");
-        for (User user : userList) {
-            printUser(user);
-        }
+        System.out.println(new JsonMapper().writerWithDefaultPrettyPrinter().writeValueAsString(userList));
+//        for (User user : userList) {
+//            printUser(user);
+//        }
     }
 
     private static void printUser(User user) {

@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 /**
  * @author: ken.lin
- * @date: 2023-09-22 19:07
+ * @since: 2023-09-22 19:07
  */
 public class BeanProxyInterceptor<T, S> implements MethodInterceptor {
 
