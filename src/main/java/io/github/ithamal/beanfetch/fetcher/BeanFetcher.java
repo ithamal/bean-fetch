@@ -36,7 +36,7 @@ public class BeanFetcher<T, S> {
                                              KeyConverter<K, SK> keyConverter, Class<? extends Fetcher<SK, V>> fetcherClass) {
         hasLazy = hasLazy || type == FetchType.LAZY;
         Fetcher<?, ?> fetcher = fetcherFactory.getFetcher(fetcherClass);
-        addMeta( true, type, setter, keyMapper, keyConverter, fetcher);
+        addMeta(true, type, setter, keyMapper, keyConverter, fetcher);
         return this;
     }
 
@@ -116,7 +116,7 @@ public class BeanFetcher<T, S> {
 
     public void fetch(Map<S, T> beanMap, List<S> sourceList, FetchMeta meta) {
         Collection<Object> keys = collectKeys(sourceList, meta, true);
-        Map<Object, T> resultMap = meta.fetcher.fetch(keys);
+        Map<Object, T> resultMap = keys.isEmpty() ? Collections.emptyMap() : meta.fetcher.fetch(keys);
         SingleList<S> tmpList = new SingleList<>();
         for (S source : sourceList) {
             tmpList.add(source);
@@ -135,6 +135,9 @@ public class BeanFetcher<T, S> {
         Collection<Object> keys = distinct ? new HashSet<>() : new ArrayList<>();
         for (S source : sourceList) {
             Object key = meta.keyMapper.apply(source);
+            if (key == null) {
+                continue;
+            }
             if (meta.keyConverter != null) {
                 keys.addAll(Arrays.asList(meta.keyConverter.convert((String) key)));
             } else {
