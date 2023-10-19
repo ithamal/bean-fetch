@@ -5,6 +5,7 @@ import io.github.ithamal.beanfetch.fetcher.adapt.ListFetcherAdapter;
 import lombok.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,6 +21,7 @@ public class RoleListFilter extends ListFetcherAdapter<Integer, Role> {
 
     @Override
     protected List<Role> fetch(List<Integer> keys) {
-        return Arrays.asList(new Role(1, "角色1"), new Role(2, "角色2"));
+//        return Arrays.asList(new Role(1, "角色1"), new Role(2, "角色2"));
+        return Collections.emptyList();
     }
 }

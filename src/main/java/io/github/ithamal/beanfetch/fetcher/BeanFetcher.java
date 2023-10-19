@@ -121,7 +121,7 @@ public class BeanFetcher<T, S> {
         for (S source : sourceList) {
             tmpList.add(source);
             Collection<Object> subKeys = collectKeys(tmpList, meta, false);
-            List<Object> subList = subKeys.stream().map(resultMap::get).collect(Collectors.toList());
+            List<Object> subList = subKeys.stream().map(resultMap::get).filter(Objects::nonNull).collect(Collectors.toList());
             T bean = beanMap.get(source);
             if (meta.isMany) {
                 meta.setter.set(bean, subList);
