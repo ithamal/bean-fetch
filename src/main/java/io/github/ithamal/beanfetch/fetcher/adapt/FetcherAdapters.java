@@ -13,11 +13,16 @@ import java.util.function.Function;
  */
 public abstract class FetcherAdapters {
 
-    public static <K, V> ListFetcherAdapter<K, V> list(Function<Collection<K>, List<V>> function) {
+    public static <K, V> ListFetcherAdapter<K, V> list(Function<Collection<K>, List<V>> fetcher, Function<V, K> keyMapper) {
         return new ListFetcherAdapter<K, V>() {
             @Override
+            public K extraKey(V value) {
+                return keyMapper.apply(value);
+            }
+
+            @Override
             protected List<V> fetch(List<K> keys) {
-                return function.apply(keys);
+                return fetcher.apply(keys);
             }
         };
     }

@@ -139,7 +139,7 @@ public class BeanFetcher<T, S> {
                 continue;
             }
             if (meta.keyConverter != null) {
-                keys.addAll(Arrays.asList(meta.keyConverter.convert((String) key)));
+                keys.addAll(Arrays.asList(meta.keyConverter.convert(key)));
             } else {
                 keys.add(key);
             }

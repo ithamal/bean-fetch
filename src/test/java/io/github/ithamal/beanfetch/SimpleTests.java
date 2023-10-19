@@ -40,7 +40,8 @@ public class SimpleTests {
         RoleRepository roleRepository = new RoleRepository();
         BeanFetcher<User, UserPo> beanFetcher = new BeanFetcher<User, UserPo>()
 //                .many(FetchType.EAGER, User::setRoles, UserPo::getRoleIds, StrToIntListSplitter.INSTANCE, RoleFilter.class)
-                .many(FetchType.LAZY, User::setRoles, UserPo::getRoleIds, StrToIntListSplitter.INSTANCE, roleRepository::findMapByIds)
+//                .many(FetchType.LAZY, User::setRoles, UserPo::getRoleIds, StrToIntListSplitter.INSTANCE, roleRepository::findMapByIds)
+                .many(FetchType.LAZY, User::setRoles, UserPo::getRoleIds, StrToIntListSplitter.INSTANCE, new RoleListFilter())
 //                .single(FetchType.EAGER, User::setRole, UserPo::getRoleIds, StrToIntListSplitter.INSTANCE, RoleFilter.class)
                 .single(FetchType.LAZY, User::setRole, UserPo::getRoleIds, StrToIntListSplitter.INSTANCE, (k) -> {
                     System.out.println("加载键：" + k);
